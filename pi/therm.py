@@ -1,55 +1,22 @@
+import time
+
+import Adafruit_GPIO.SPI as SPI
 import RPi.GPIO as GPIO
-from time import sleep
-
-sclk_pin = 7
-cs_pin = 11
-so_pin = 13
-GPIO.setwarnings(False)			#disable warnings
-GPIO.setmode(GPIO.BOARD)		#set pin numbering system
-GPIO.setup(sclk_pin,GPIO.OUT)
-GPIO.setup(cs_pin,GPIO.OUT)
-GPIO.setup(so_pin,GPIO.IN)
-
-GPIO.output(cs_pin, 1)
-
-delay_micro = 0.00001
-
-sleep(2)
-
-
-def spiread():
+import Adafruit_MAX31855.MAX31855 as MAX31855
     
-    b = 0
-    
-    for i in range(7,-1,-1):
-        GPIO.output(sclk_pin, 0)
-        sleep(delay_micro)
-        if (GPIO.input(so_pin)):
-            b |= (1 << i)
-        
-        GPIO.output(sclk_pin, 1)
-        sleep(delay_micro)
-        
-    return b
+def c_to_f(c):
+    return c * 9.0 / 5.0 + 32.0
 
+CLK = 4
+CS  = 17 #11
+DO  = 27 #13
 
-while(True):
-    GPIO.output(cs_pin, 0)
-    sleep(delay_micro)
-    v = spiread()
-    v <<= 8
-    v |= spiread()
-    GPIO.output(cs_pin, 1)
+sensor = MAX31855.MAX31855(CLK, CS, DO)
 
-    if (v & 0x4):
-        print("NaN")
-    
-    v >>= 3
-    celsius = v * 0.25
-    fahrenheit = celsius * 9.0 / 5.0 + 32
-    print(celsius, fahrenheit)
-
-    sleep(3)
-    
-    
-
+print('Press Ctrl-C to quit.')
+while True:
+    temp = sensor.readTempC()
+    internal = sensor.readInternalC()
+    print('Thermocouple Temperature: {0:0.3F}*C / {1:0.3F}*F'.format(temp, c_to_f(temp)))
+    print('    Internal Temperature: {0:0.3F}*C / {1:0.3F}*F'.format(internal, c_to_f(internal)))
+    time.sleep(1.0)
