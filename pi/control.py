@@ -1,5 +1,6 @@
 from damper import Damper
 import Adafruit_MAX31855.MAX31855 as MAX31855
+from time import sleep
 
 CLK = 4 # pin 7
 CS  = 17 # pin 11
@@ -14,7 +15,7 @@ class ControlUnit:
     def setup(self):
         self.damper.setup()
         sleep(0.5)
-        self.target_temp = self.readTempF(sensor)
+        self.target_temp = self.readTempF()
         self.previous_temp_diff = self.readTempF() - self.target_temp
 
     # Because I'm a US heathen

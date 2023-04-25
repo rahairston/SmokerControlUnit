@@ -7,6 +7,8 @@ open_duty = 10
 close_duty = open_duty / 2
 fully_closed_position = 0
 fully_open_position = 100
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
 
 class Damper:
     def __init__(self, pin=pwm_pin, frequency=frequency):
