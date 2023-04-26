@@ -5,9 +5,13 @@ unit = ControlUnit(5)
 
 unit.setup()
 
-count = 0
-while count < 10:
-	print(unit.readTempF())
-	print(unit.sensor.readState())
-	sleep(1.5)
-	count += 1
+unit.damper.testPosition(0.24)
+sleep(4)
+
+#for i in range(1, 50):
+#	sleep_time = (i / 1000.0) + 0.016
+#	
+#	print(f"Sleeping for {sleep_time} seconds")
+#	unit.damper.testPosition(sleep_time, i % 2 == 0)
+#	sleep(2)
+

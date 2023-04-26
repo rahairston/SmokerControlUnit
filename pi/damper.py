@@ -6,7 +6,10 @@ frequency = 48
 open_duty = 10
 close_duty = open_duty / 2
 fully_closed_position = 0
-fully_open_position = 100
+fully_open_position = 20
+min_time = 0.016 # found via testing to be smallest registered time for movement
+max_time = 0.23 # time from full open to full close
+base_increment = (max_time - min_time) / fully_open_position
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
@@ -19,12 +22,9 @@ class Damper:
     
     # moves arm to fully open, then closed
     def setup(self):
-        self.pwm.ChangeDutyCycle(open_duty)
-        sleep(.45)
-        self.pwm.ChangeDutyCycle(0)
-        sleep(2)
-        self.pwm.ChangeDutyCycle(close_duty)
-        sleep(.38)
+        self.setFullyOpen()
+        sleep(1)
+        self.setFullyClosed()
         self.pwm.ChangeDutyCycle(0)
 
     # temp diff = current - target
@@ -41,6 +41,23 @@ class Damper:
                 self.position = fully_open_position
                 return
             self.pwm.ChangeDutyCycle(open_duty)
-        
+        sleep_time = 0
+        sleep(sleep_time)
         # always set back to zero
         self.pwm.ChangeDutyCycle(0)
+
+    def setFullyOpen(self):
+        self.pwm.ChangeDutyCycle(open_duty)
+        sleep(.5)
+        self.pwm.ChangeDutyCycle(0)
+
+    # 0.23 is time from fully open to close through testing
+    # However if we don't know the current position we can overshoot, then close back
+    # by "opening" for 0.08s (also through testing)
+    def setFullyClosed(self):
+        self.pwm.ChangeDutyCycle(close_duty)
+        sleep(.5)
+        self.pwm.ChangeDutyCycle(open_duty)
+        sleep(.08)
+        self.pwm.ChangeDutyCycle(0)
+
