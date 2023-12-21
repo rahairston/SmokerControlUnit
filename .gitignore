@@ -1,0 +1,4 @@
+venv/
+build/
+Adafruit_MAX31855/
+__pycache__/
