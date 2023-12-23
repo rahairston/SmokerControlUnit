@@ -11,9 +11,9 @@ This section of code is for use on a raspberry pi with Python3
 
 ### Damper
 3 pins to be used:
-- 5V pin
+- 5V pin (Right channel)
 - GND pin
-- 1 of the 2 PWM0 pins 
+- 1 of the 2 PWM0 pins (Left Channel)
     - **note**: the Thermalcouple code from Adafruit forces the board mode into BCM, so make sure you are using the GPIO number and not the pin number e.g. GPIO 18 -> 18 in code for the `pwm_pin`
 
 ### Thermocouple
